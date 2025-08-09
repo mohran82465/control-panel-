@@ -1,0 +1,51 @@
+<div class="card p-11 gap-4">
+    <div class="flex flex-col gap-2">
+    <div class="flex justify-around">
+        <p-button label="doctors" icon="pi pi-shield" class="pb-9" />
+        <p-button label="delivery" icon="pi pi-box" class="pb-9" />
+        <p-button label="driver" icon="pi pi-car" class="pb-9" />
+        <p-button label="real estate" icon="pi pi-building" class="pb-9" />
+
+    </div>
+
+    <p-table #dt [value]="products" class="!pt-9" (sortFunction)="customSort($event)" [customSort]="true">
+        <ng-template pTemplate="header" class="pt-9">
+            <tr>
+                <th pSortableColumn="name">
+                    <div class="flex items-center gap-2">
+                        Name
+                        <p-sortIcon field="name"></p-sortIcon>
+                    </div>
+                </th>
+                <th pSortableColumn="email">
+                    <div class="flex items-center gap-2">
+                        Email
+                        <p-sortIcon field="email"></p-sortIcon>
+                    </div>
+                </th>
+                <th pSortableColumn="phone">
+                    <div class="flex items-center gap-2">
+                        Phone
+                        <p-sortIcon field="phone"></p-sortIcon>
+                    </div>
+                </th>
+                <th pSortableColumn="accountType">
+                    <div class="flex items-center gap-2">
+                        Account Type
+                        <p-sortIcon field="accountType"></p-sortIcon>
+                    </div>
+                </th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-provider>
+            <tr>
+                <td>{{ provider.name }}</td>
+                <td>{{ provider.email }}</td>
+                <td>{{ provider.phone }}</td>
+                <td>{{ provider.accountType }}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+</div>
