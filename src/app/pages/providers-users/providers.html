@@ -6,7 +6,7 @@
         [icon]="type.icon"
         (click)="loadProviders(type.value, 1)"
         [variant]="selectedService === type.value ? 'outlined' : undefined">
-    </p-button>
+      </p-button>
     </div>
   
     <!-- Table -->
@@ -18,51 +18,63 @@
       [lazy]="true"
       [loading]="loading"
       (onPage)="onPageChange($event)"
-      responsiveLayout="scroll"
-      class="mt-4">
+      responsiveLayout="stack"
+      [breakpoint]="'768px'"
+      class="w-full mt-4">
   
+      <!-- Header -->
       <ng-template pTemplate="header">
-        <tr>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Account Type</th>
-          <th>Service Type</th>
-          <th>Documents</th>
+        <tr class="bg-gray-100">
+          <th class="p-3 text-left">Name</th>
+          <th class="p-3 text-left">Email</th>
+          <th class="p-3 text-left">Account Type</th>
+          <th class="p-3 text-left">Service Type</th>
+          <th class="p-3 text-left">Documents</th>
         </tr>
       </ng-template>
   
+      <!-- Body -->
       <ng-template pTemplate="body" let-provider>
-        <tr>
-          <td>{{ provider.fullName }}</td>
-          <td>{{ provider.email }}</td>
-          <td>{{ provider.accountType }}</td>
-          <td>{{ provider.serviceType }}</td>
-          <td class="flex gap-2">
+        <tr class="border-b hover:bg-gray-50 md:table-row block md:border-none">
+          <td class="p-3 flex justify-between md:table-cell" data-label="Name">
+            <span class="md:hidden font-semibold text-gray-700">Name:</span>
+            {{ provider.fullName }}
+          </td>
+          <td class="p-3 flex justify-between md:table-cell" data-label="Email">
+            <span class="md:hidden font-semibold text-gray-700">Email:</span>
+            {{ provider.email || 'N/A' }}
+          </td>
+          <td class="p-3 flex justify-between md:table-cell" data-label="Account Type">
+            <span class="md:hidden font-semibold text-gray-700">Account Type:</span>
+            {{ provider.accountType || 'N/A' }}
+          </td>
+          <td class="p-3 flex justify-between md:table-cell" data-label="Service Type">
+            <span class="md:hidden font-semibold text-gray-700">Service Type:</span>
+            {{ provider.serviceType || 'N/A' }}
+          </td>
+          <td class="p-3 flex justify-between md:table-cell" data-label="Documents">
+            <span class="md:hidden font-semibold text-gray-700">Documents:</span>
   
             @if (provider.nationalIdImage) {
-              <img 
-                src="{{ provider.nationalIdImage.secure_url }}" 
-                alt="ID" 
-                class="doc-icon" 
-                (click)="showImage(provider.nationalIdImage.secure_url)">
+              <img src="{{ provider.nationalIdImage.secure_url }}" 
+                   alt="ID" 
+                   class="doc-icon" 
+                   (click)="showImage(provider.nationalIdImage.secure_url)">
             }
   
             @if (provider.driverLicenseImage) {
-              <img 
-                src="{{ provider.driverLicenseImage.secure_url }}" 
-                alt="License" 
-                class="doc-icon" 
-                (click)="showImage(provider.driverLicenseImage.secure_url)">
+              <img src="{{ provider.driverLicenseImage.secure_url }}" 
+                   alt="License" 
+                   class="doc-icon" 
+                   (click)="showImage(provider.driverLicenseImage.secure_url)">
             }
   
             @if (provider.carLicenseImage) {
-              <img 
-                src="{{ provider.carLicenseImage.secure_url }}" 
-                alt="Car License" 
-                class="doc-icon" 
-                (click)="showImage(provider.carLicenseImage.secure_url)">
+              <img src="{{ provider.carLicenseImage.secure_url }}" 
+                   alt="Car License" 
+                   class="doc-icon" 
+                   (click)="showImage(provider.carLicenseImage.secure_url)">
             }
-  
           </td>
         </tr>
       </ng-template>
