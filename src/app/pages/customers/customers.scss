@@ -1,0 +1,21 @@
+/* Show column labels on mobile */
+@media (max-width: 768px) {
+    .p-datatable tbody td {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  
+    .p-datatable tbody td::before {
+      content: attr(data-label);
+      font-weight: 600;
+      color: #4b5563; /* Tailwind's gray-700 */
+      padding-right: 1rem;
+    }
+  }
+  @media (max-width: 768px) {
+    .p-datatable-thead {
+      display: table-header-group !important;
+    }
+  }
+  
