@@ -1,51 +1,76 @@
-<div class="card p-11 gap-4">
-    <div class="flex flex-col gap-2">
-    <div class="flex justify-around">
-        <p-button label="doctors" icon="pi pi-shield" class="pb-9" />
-        <p-button label="delivery" icon="pi pi-box" class="pb-9" />
-        <p-button label="driver" icon="pi pi-car" class="pb-9" />
-        <p-button label="real estate" icon="pi pi-building" class="pb-9" />
-
+<div class="card p-4 gap-4">
+    <!-- Service Buttons -->
+    <div class="flex flex-wrap justify-around gap-2">
+      <p-button *ngFor="let type of serviceTypes"
+        [label]="type.label"
+        [icon]="type.icon"
+        (click)="loadProviders(type.value, 1)"
+        [variant]="selectedService === type.value ? 'outlined' : undefined">
+    </p-button>
     </div>
-
-    <p-table #dt [value]="products" class="!pt-9" (sortFunction)="customSort($event)" [customSort]="true">
-        <ng-template pTemplate="header" class="pt-9">
-            <tr>
-                <th pSortableColumn="name">
-                    <div class="flex items-center gap-2">
-                        Name
-                        <p-sortIcon field="name"></p-sortIcon>
-                    </div>
-                </th>
-                <th pSortableColumn="email">
-                    <div class="flex items-center gap-2">
-                        Email
-                        <p-sortIcon field="email"></p-sortIcon>
-                    </div>
-                </th>
-                <th pSortableColumn="phone">
-                    <div class="flex items-center gap-2">
-                        Phone
-                        <p-sortIcon field="phone"></p-sortIcon>
-                    </div>
-                </th>
-                <th pSortableColumn="accountType">
-                    <div class="flex items-center gap-2">
-                        Account Type
-                        <p-sortIcon field="accountType"></p-sortIcon>
-                    </div>
-                </th>
-            </tr>
-        </ng-template>
-
-        <ng-template pTemplate="body" let-provider>
-            <tr>
-                <td>{{ provider.name }}</td>
-                <td>{{ provider.email }}</td>
-                <td>{{ provider.phone }}</td>
-                <td>{{ provider.accountType }}</td>
-            </tr>
-        </ng-template>
+  
+    <!-- Table -->
+    <p-table #dt
+      [value]="providers"
+      [paginator]="true"
+      [rows]="rows"
+      [totalRecords]="totalRecords"
+      [lazy]="true"
+      [loading]="loading"
+      (onPage)="onPageChange($event)"
+      responsiveLayout="scroll"
+      class="mt-4">
+  
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Account Type</th>
+          <th>Service Type</th>
+          <th>Documents</th>
+        </tr>
+      </ng-template>
+  
+      <ng-template pTemplate="body" let-provider>
+        <tr>
+          <td>{{ provider.fullName }}</td>
+          <td>{{ provider.email }}</td>
+          <td>{{ provider.accountType }}</td>
+          <td>{{ provider.serviceType }}</td>
+          <td class="flex gap-2">
+  
+            @if (provider.nationalIdImage) {
+              <img 
+                src="{{ provider.nationalIdImage.secure_url }}" 
+                alt="ID" 
+                class="doc-icon" 
+                (click)="showImage(provider.nationalIdImage.secure_url)">
+            }
+  
+            @if (provider.driverLicenseImage) {
+              <img 
+                src="{{ provider.driverLicenseImage.secure_url }}" 
+                alt="License" 
+                class="doc-icon" 
+                (click)="showImage(provider.driverLicenseImage.secure_url)">
+            }
+  
+            @if (provider.carLicenseImage) {
+              <img 
+                src="{{ provider.carLicenseImage.secure_url }}" 
+                alt="Car License" 
+                class="doc-icon" 
+                (click)="showImage(provider.carLicenseImage.secure_url)">
+            }
+  
+          </td>
+        </tr>
+      </ng-template>
     </p-table>
-</div>
-</div>
+  
+    <!-- Image Popup -->
+    <p-dialog header="Document Preview" [(visible)]="displayImage" [modal]="true" [style]="{width: '50vw'}">
+      <img [src]="selectedImageUrl" alt="Document" class="w-full" />
+    </p-dialog>
+  </div>
+  

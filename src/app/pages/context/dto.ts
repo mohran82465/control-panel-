@@ -14,3 +14,18 @@ export interface USER {
     data: USER[];
   }
   
+  export interface ServiceProvider {
+    id: string;
+    fullName: string;
+    email?: string;
+    phone?: string; 
+    accountType: string;
+    serviceType: string;
+    nationalIdImage?: { secure_url: string };
+    driverLicenseImage?: { secure_url: string };
+    carLicenseImage?: { secure_url: string };
+    additionalDocuments?: { secure_url: string };
+    profiePicture?: { secure_url: string };
+    carImages?: { secure_url: string }[];
+  }
+  
