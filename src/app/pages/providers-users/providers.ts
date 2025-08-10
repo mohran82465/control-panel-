@@ -2,10 +2,10 @@ import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { TableModule } from 'primeng/table';
 import { Table } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
-import { UserProviderService } from '../service/user-provider-service';
 import { DialogModule } from 'primeng/dialog';
 import { ServiceProvider } from '../context/dto';
 import { CommonModule } from '@angular/common';
+import { UserProviderService } from '../service/user-provider-service';
 
 @Component({
   selector: 'app-providers',
