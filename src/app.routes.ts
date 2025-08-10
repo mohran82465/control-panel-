@@ -3,8 +3,8 @@ import { AppLayout } from './app/layout/component/app.layout';
 import { Dashboard } from './app/pages/dashboard/dashboard';
 import { Landing } from './app/pages/landing/landing';
 import { Notfound } from './app/pages/notfound/notfound';
-import { Providers } from '@/pages/providers-users/providers';
-import { Customers } from '@/pages/customers/customers';
+import { Providers } from './app/pages/providers-users/providers';
+import { Customers } from './app/pages/customers/customers';
 
 export const appRoutes: Routes = [
     {
