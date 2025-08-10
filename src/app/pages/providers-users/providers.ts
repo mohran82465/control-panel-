@@ -2,34 +2,11 @@ import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { TableModule } from 'primeng/table';
 import { Table } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
-import { HttpErrorResponse } from '@angular/common/http';
 
-// Try different import paths - use one of these depending on your file structure:
-// Option 1: If service is in the same directory as providers-users
-// import { UserProviderService } from './service/user-provider-service';
-
-// Option 2: If service is in a shared services directory
-// import * as userProviderService from '../../services/user-provider-service';
-
-// Option 3: If service is in app/services
-// import { UserProviderService } from '../../services/user-provider.service';
-
-// Option 4: If service is in app/shared/services
-// import { UserProviderService } from '../../shared/services/user-provider.service';
-
+import { UserProviderService, GetAllUsersResponse } from '../service/user-provider-service';
 import { DialogModule } from 'primeng/dialog';
 import { ServiceProvider } from '../context/dto';
 import { CommonModule } from '@angular/common';
-import { UserProviderService } from '../service/user-provider-service';
-
-// Define the API response interface
-interface ApiResponse {
-  message: string;
-  total: number;
-  page: number;
-  pages: number;
-  data: ServiceProvider[];
-}
 
 @Component({
   selector: 'app-providers',
@@ -67,9 +44,9 @@ export class Providers implements OnInit {
   loadProviders(service: string, page: number): void {
     this.loading = true;
     this.selectedService = service;
-  
+
     this.userProviderService.getAllUsers(service, page, this.rows).subscribe({
-      next: (response: any) => {
+      next: (response: GetAllUsersResponse) => {
         this.providers = response.data;
         this.totalRecords = response.total;
         this.loading = false;
@@ -80,6 +57,7 @@ export class Providers implements OnInit {
       }
     });
   }
+
   onPageChange(event: any): void {
     const page = event.first / event.rows + 1;
     this.rows = event.rows;
@@ -103,8 +81,8 @@ export class Providers implements OnInit {
     if (provider.carLicenseImage?.secure_url) {
       docs.push({ title: 'Car License', url: provider.carLicenseImage.secure_url });
     }
-    if (provider.carImages?.length) {
-      provider.carImages.forEach((img, index) => {
+    if (provider.carImages && provider.carImages.length > 0) {
+      provider.carImages.forEach((img: any, index: number) => {
         if (img.secure_url) {
           docs.push({ title: `Car Image ${index + 1}`, url: img.secure_url });
         }
