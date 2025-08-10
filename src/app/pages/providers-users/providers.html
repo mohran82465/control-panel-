@@ -54,35 +54,55 @@
           </td>
           <td class="p-3 flex justify-between md:table-cell" data-label="Documents">
             <span class="md:hidden font-semibold text-gray-700">Documents:</span>
-  
-            @if (provider.nationalIdImage) {
-              <img src="{{ provider.nationalIdImage.secure_url }}" 
-                   alt="ID" 
-                   class="doc-icon" 
-                   (click)="showImage(provider.nationalIdImage.secure_url)">
-            }
-  
-            @if (provider.driverLicenseImage) {
-              <img src="{{ provider.driverLicenseImage.secure_url }}" 
-                   alt="License" 
-                   class="doc-icon" 
-                   (click)="showImage(provider.driverLicenseImage.secure_url)">
-            }
-  
-            @if (provider.carLicenseImage) {
-              <img src="{{ provider.carLicenseImage.secure_url }}" 
-                   alt="Car License" 
-                   class="doc-icon" 
-                   (click)="showImage(provider.carLicenseImage.secure_url)">
-            }
+            <p-button 
+              icon="pi pi-info-circle" 
+              [rounded]="true"
+              (click)="showProviderDocuments(provider)" />
           </td>
         </tr>
       </ng-template>
     </p-table>
+  <!-- Documents Dialog -->
+<!-- Documents Dialog -->
+<p-dialog 
+  header="Document Preview" 
+  [(visible)]="displayDocumentsDialog" 
+  [modal]="true" 
+  [style]="{width: '80vw', maxWidth: '1200px'}" 
+  [closable]="true">
   
-    <!-- Image Popup -->
-    <p-dialog header="Document Preview" [(visible)]="displayImage" [modal]="true" [style]="{width: '50vw'}">
-      <img [src]="selectedImageUrl" alt="Document" class="w-full" />
-    </p-dialog>
+  <div class="space-y-6">
+    @for (doc of documentsToShow; track doc.url) {
+      <div class="border-b border-gray-200 pb-6 last:border-b-0">
+        <!-- Document Title -->
+        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+          <i class="pi pi-file text-blue-600"></i>
+          {{ doc.title }}
+        </h3>
+        
+        <!-- Document Image -->
+        <div class="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors duration-200">
+          <img 
+            [src]="doc.url" 
+            alt="{{ doc.title }}" 
+            class="w-full max-w-md mx-auto h-auto rounded-lg shadow-md cursor-pointer hover:shadow-lg transform hover:scale-105 transition-all duration-300"
+            (click)="showImage(doc.url)" 
+            loading="lazy" />
+        </div>
+      </div>
+    }
   </div>
-  
+</p-dialog>
+<!-- Single Image Dialog -->
+<p-dialog 
+header="Image Preview" 
+[(visible)]="displayImageDialog" 
+[modal]="true" 
+[style]="{width: '50vw'}"
+[closable]="true">
+
+<img 
+  [src]="selectedImageUrl" 
+  alt="Selected" 
+  class="w-full h-auto rounded shadow" />
+</p-dialog>

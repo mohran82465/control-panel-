@@ -21,10 +21,11 @@ export class Providers {
   totalRecords = 0;
   rows = 5;
   loading = false;
+  displayImageDialog = false;
+  displayDocumentsDialog = false;
 
-  displayImage = false;
   selectedImageUrl = '';
-
+  documentsToShow: { title: string; url: string }[] = [];
   serviceTypes = [
     { label: 'Doctors', value: 'Doctor', icon: 'pi pi-shield' },
     { label: 'Delivery', value: 'Delivery', icon: 'pi pi-box' },
@@ -62,6 +63,35 @@ export class Providers {
 
   showImage(url: string) {
     this.selectedImageUrl = url;
-    this.displayImage = true;
+    this.displayImageDialog = true; // Fixed: changed from displayImage to displayImageDialog
+  }
+  
+  
+  showProviderDocuments(provider: ServiceProvider) {
+    const docs: { title: string; url: string }[] = [];
+
+    if (provider.nationalIdImage?.secure_url) {
+      docs.push({ title: 'National ID', url: provider.nationalIdImage.secure_url });
+    }
+    if (provider.driverLicenseImage?.secure_url) {
+      docs.push({ title: 'Driver License', url: provider.driverLicenseImage.secure_url });
+    }
+    if (provider.carLicenseImage?.secure_url) {
+      docs.push({ title: 'Car License', url: provider.carLicenseImage.secure_url });
+    }
+    if (provider.carImages?.length) {
+      provider.carImages.forEach((img, index) => {
+        docs.push({ title: `Car Image ${index + 1}`, url: img.secure_url });
+      });
+    }
+    if (provider.additionalDocuments?.secure_url) {
+      docs.push({ title: 'Additional Document', url: provider.additionalDocuments.secure_url });
+    }
+    if (provider.profiePicture?.secure_url) {
+      docs.push({ title: 'Profile Picture', url: provider.profiePicture.secure_url });
+    }
+
+    this.documentsToShow = docs;
+    this.displayDocumentsDialog = true;
   }
 }
