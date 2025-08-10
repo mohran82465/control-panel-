@@ -2,8 +2,7 @@ import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { TableModule } from 'primeng/table';
 import { Table } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
-
-import { UserProviderService, GetAllUsersResponse } from '../service/user-provider-service';
+import { UserProviderService } from '../service/user-provider-service';
 import { DialogModule } from 'primeng/dialog';
 import { ServiceProvider } from '../context/dto';
 import { CommonModule } from '@angular/common';
@@ -37,39 +36,41 @@ export class Providers implements OnInit {
 
   private userProviderService = inject(UserProviderService);
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.loadProviders(this.selectedService, 1);
   }
 
-  loadProviders(service: string, page: number): void {
+  loadProviders(service: string, page: number) {
     this.loading = true;
     this.selectedService = service;
 
     this.userProviderService.getAllUsers(service, page, this.rows).subscribe({
-      next: (response: GetAllUsersResponse) => {
-        this.providers = response.data;
-        this.totalRecords = response.total;
+      next: (res: any) => {
+        this.providers = res.data || [];
+        this.totalRecords = res.total || 0;
         this.loading = false;
       },
-      error: (error: any) => {
-        console.error('Error loading providers:', error);
+      error: (err: any) => {
+        console.error('Error loading providers:', err);
+        this.providers = [];
+        this.totalRecords = 0;
         this.loading = false;
       }
     });
   }
 
-  onPageChange(event: any): void {
+  onPageChange(event: any) {
     const page = event.first / event.rows + 1;
     this.rows = event.rows;
     this.loadProviders(this.selectedService, page);
   }
 
-  showImage(url: string): void {
+  showImage(url: string) {
     this.selectedImageUrl = url;
     this.displayImageDialog = true;
   }
 
-  showProviderDocuments(provider: ServiceProvider): void {
+  showProviderDocuments(provider: ServiceProvider) {
     const docs: { title: string; url: string }[] = [];
 
     if (provider.nationalIdImage?.secure_url) {

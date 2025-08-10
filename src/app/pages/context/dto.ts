@@ -15,17 +15,25 @@ export interface USER {
   }
   
   export interface ServiceProvider {
-    id: string;
+    _id: string;
     fullName: string;
-    email?: string;
-    phone?: string; 
+    email: string;
     accountType: string;
     serviceType: string;
-    nationalIdImage?: { secure_url: string };
-    driverLicenseImage?: { secure_url: string };
-    carLicenseImage?: { secure_url: string };
-    additionalDocuments?: { secure_url: string };
-    profiePicture?: { secure_url: string };
-    carImages?: { secure_url: string }[];
+    nationalIdImage?: { secure_url: string; public_id: string };
+    driverLicenseImage?: { secure_url: string; public_id: string };
+    carLicenseImage?: { secure_url: string; public_id: string };
+    additionalDocuments?: { secure_url: string; public_id: string };
+    profiePicture?: { secure_url: string; public_id: string };
+    carImages?: Array<{ secure_url: string; public_id: string; _id: string; id: string }>;
+    createdAt: string;
+    updatedAt: string;
+    isConfirmed?: boolean;
+    password?: string;
+    __v?: number;
+    attemptCount?: number;
+    emailOTP?: string;
+    otpExpiresAt?: string;
+    id?: string;
   }
   
