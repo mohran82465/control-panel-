@@ -2,11 +2,21 @@ import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { TableModule } from 'primeng/table';
 import { Table } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
+import { HttpErrorResponse } from '@angular/common/http';
 
 import { UserProviderService } from '../service/user-provider-service';
 import { DialogModule } from 'primeng/dialog';
 import { ServiceProvider } from '../context/dto';
 import { CommonModule } from '@angular/common';
+
+// Define the API response interface locally if not already defined
+interface ApiResponse {
+  message: string;
+  total: number;
+  page: number;
+  pages: number;
+  data: ServiceProvider[];
+}
 
 @Component({
   selector: 'app-providers',
@@ -46,12 +56,12 @@ export class Providers implements OnInit {
     this.selectedService = service;
 
     this.userProviderService.getAllUsers(service, page, this.rows).subscribe({
-      next: (response) => {
+      next: (response: ApiResponse) => {
         this.providers = response.data;
         this.totalRecords = response.total;
         this.loading = false;
       },
-      error: (error) => {
+      error: (error: HttpErrorResponse) => {
         console.error('Error loading providers:', error);
         this.loading = false;
       }
