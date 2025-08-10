@@ -4,12 +4,25 @@ import { Table } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { HttpErrorResponse } from '@angular/common/http';
 
-import { UserProviderService } from '../service/user-provider-service';
+// Try different import paths - use one of these depending on your file structure:
+// Option 1: If service is in the same directory as providers-users
+// import { UserProviderService } from './service/user-provider-service';
+
+// Option 2: If service is in a shared services directory
+// import * as userProviderService from '../../services/user-provider-service';
+
+// Option 3: If service is in app/services
+// import { UserProviderService } from '../../services/user-provider.service';
+
+// Option 4: If service is in app/shared/services
+// import { UserProviderService } from '../../shared/services/user-provider.service';
+
 import { DialogModule } from 'primeng/dialog';
 import { ServiceProvider } from '../context/dto';
 import { CommonModule } from '@angular/common';
+import { UserProviderService } from '../service/user-provider-service';
 
-// Define the API response interface locally if not already defined
+// Define the API response interface
 interface ApiResponse {
   message: string;
   total: number;
@@ -54,20 +67,19 @@ export class Providers implements OnInit {
   loadProviders(service: string, page: number): void {
     this.loading = true;
     this.selectedService = service;
-
+  
     this.userProviderService.getAllUsers(service, page, this.rows).subscribe({
-      next: (response: ApiResponse) => {
+      next: (response: any) => {
         this.providers = response.data;
         this.totalRecords = response.total;
         this.loading = false;
       },
-      error: (error: HttpErrorResponse) => {
+      error: (error: any) => {
         console.error('Error loading providers:', error);
         this.loading = false;
       }
     });
   }
-
   onPageChange(event: any): void {
     const page = event.first / event.rows + 1;
     this.rows = event.rows;
