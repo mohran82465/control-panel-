@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild,inject } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { TableModule } from 'primeng/table';
 import { Table } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -10,11 +10,11 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-providers',
-  imports: [TableModule,ButtonModule,DialogModule,CommonModule ],
+  imports: [TableModule, ButtonModule, DialogModule, CommonModule],
   templateUrl: './providers.html',
   styleUrl: './providers.scss'
 })
-export class Providers {
+export class Providers implements OnInit {
   @ViewChild('dt') dt!: Table;
 
   providers: ServiceProvider[] = [];
@@ -35,39 +35,41 @@ export class Providers {
 
   selectedService = 'Doctor';
 
-  private userProviderService  = inject( UserProviderService)
+  private userProviderService = inject(UserProviderService);
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadProviders(this.selectedService, 1);
   }
 
-  loadProviders(service: string, page: number) {
+  loadProviders(service: string, page: number): void {
     this.loading = true;
     this.selectedService = service;
 
     this.userProviderService.getAllUsers(service, page, this.rows).subscribe({
-      next: (res: any) => {
-        this.providers = res.data;
-        this.totalRecords = res.total;
+      next: (response) => {
+        this.providers = response.data;
+        this.totalRecords = response.total;
         this.loading = false;
       },
-      error: () => (this.loading = false)
+      error: (error) => {
+        console.error('Error loading providers:', error);
+        this.loading = false;
+      }
     });
   }
 
-  onPageChange(event: any) {
+  onPageChange(event: any): void {
     const page = event.first / event.rows + 1;
     this.rows = event.rows;
     this.loadProviders(this.selectedService, page);
   }
 
-  showImage(url: string) {
+  showImage(url: string): void {
     this.selectedImageUrl = url;
-    this.displayImageDialog = true; // Fixed: changed from displayImage to displayImageDialog
+    this.displayImageDialog = true;
   }
-  
-  
-  showProviderDocuments(provider: ServiceProvider) {
+
+  showProviderDocuments(provider: ServiceProvider): void {
     const docs: { title: string; url: string }[] = [];
 
     if (provider.nationalIdImage?.secure_url) {
@@ -81,7 +83,9 @@ export class Providers {
     }
     if (provider.carImages?.length) {
       provider.carImages.forEach((img, index) => {
-        docs.push({ title: `Car Image ${index + 1}`, url: img.secure_url });
+        if (img.secure_url) {
+          docs.push({ title: `Car Image ${index + 1}`, url: img.secure_url });
+        }
       });
     }
     if (provider.additionalDocuments?.secure_url) {
