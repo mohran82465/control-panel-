@@ -5,6 +5,7 @@ import { Landing } from './app/pages/landing/landing';
 import { Notfound } from './app/pages/notfound/notfound';
 import { Providers } from './app/pages/providers-users/providers';
 import { Customers } from './app/pages/customers/customers';
+import { Sites } from './app/pages/sites/sites';
 
 export const appRoutes: Routes = [
     {
@@ -14,6 +15,7 @@ export const appRoutes: Routes = [
             { path: '', component: Dashboard },
             { path: 'providers', component: Providers },
             { path: 'customers', component: Customers },
+            { path: 'sites', component:Sites}
         ]
     },
     { path: 'landing', component: Landing },

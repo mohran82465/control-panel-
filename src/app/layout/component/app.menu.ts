@@ -55,14 +55,34 @@ export class AppMenu {
                             }
                         ]
                     },
-            
+
                     {
                         label: 'Not Found',
                         icon: 'pi pi-fw pi-exclamation-circle',
                         routerLink: ['/pages/notfound']
                     },
-               
+
                 ]
+            },
+            {
+                label: "Restaurant",
+                icon: 'pi pi-fw pi-shop',
+                items: [
+                    { 
+                        label: "Restaurant",
+                        icon: 'pi pi-fw pi-shop',
+                        items:[
+                            {
+                                label:'site',
+                                icon: 'pi pi-fw pi-map-marker',
+                                routerLink: ['/sites']
+                                
+                            }
+                        ]
+
+                    }
+                ]
+
             },
             {
                 label: 'Users',
@@ -84,7 +104,7 @@ export class AppMenu {
                                 routerLink: ['/customers']
                             },
                         ]
-                    },               
+                    },
                 ]
             }
         ];
