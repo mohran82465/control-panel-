@@ -25,6 +25,7 @@ export interface RestaurantApiResponse {
   phone: string;
   websiteLink: string;
   deliveryTime: string;
+  discripion: string;
   distance: string;
   image: CloudinaryImage;
   menuImages: CloudinaryImage[];
@@ -49,6 +50,7 @@ export interface RestaurantData {
   cuisine: string;
   rating: number;
   deliveryTime: string;
+  discripion: string;
   distance: string;
   phone?: string; 
   websiteLink: string; 
@@ -131,6 +133,7 @@ export class Restaurant {
       cuisine: apiRestaurant.cuisine,
       rating: apiRestaurant.rating,
       websiteLink: apiRestaurant.websiteLink,
+      discripion: apiRestaurant.discripion,
       phone: apiRestaurant.phone,
       deliveryTime: apiRestaurant.deliveryTime,
       distance: apiRestaurant.distance,

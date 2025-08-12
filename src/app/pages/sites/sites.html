@@ -10,6 +10,7 @@
             <tr class="bg-gray-100">
                 <th class="p-3 text-left">Name</th>
                 <th class="p-3 text-left">Cuisine</th>
+                <th class="p-3 text-left">Description</th>
                 <th class="p-3 text-left">Rating</th>
                 <th class="p-3 text-left">Phone</th>
                 <th class="p-3 text-left">Link</th>
@@ -35,6 +36,12 @@
                 <td class="p-3 flex justify-between md:table-cell" data-label="Cuisine">
                     <span class="md:hidden font-semibold text-gray-700">Cuisine:</span>
                     {{ restaurant.cuisine }}
+                </td>
+
+                <!-- Discripion -->
+                <td class="p-3 flex justify-between md:table-cell" data-label="Cuisine">
+                    <span class="md:hidden font-semibold text-gray-700">Description:</span>
+                    {{ restaurant.discripion }}
                 </td>
 
                 <!-- Rating -->
