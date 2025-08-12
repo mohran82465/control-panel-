@@ -126,6 +126,13 @@ export class Restaurant {
     }
   }
 
+
+
+  addRestaurant(formData:FormData){
+    const headers = this.getAuthHeaders();
+    return this.http.post('https://multiservice-production-1288.up.railway.app/auth/createRestaurant', formData,{headers})
+  }
+
   private transformRestaurant(apiRestaurant: RestaurantApiResponse): RestaurantData {
     return {
       id: apiRestaurant._id,

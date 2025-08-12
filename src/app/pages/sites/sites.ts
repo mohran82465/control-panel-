@@ -8,6 +8,13 @@ import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { Restaurant, RestaurantData } from '../service/restaurant';
+import { InputTextModule } from 'primeng/inputtext';
+import { TextareaModule } from 'primeng/textarea';
+import { FileUploadModule } from 'primeng/fileupload';
+import { CommonModule } from '@angular/common';
+import { InputNumberModule } from 'primeng/inputnumber';
+
+
 
 @Component({
   selector: 'app-sites',
@@ -17,6 +24,11 @@ import { Restaurant, RestaurantData } from '../service/restaurant';
     TableModule, 
     ReactiveFormsModule,
     ToastModule,
+    TextareaModule,
+    FileUploadModule,
+    CommonModule,
+    InputTextModule,
+    InputNumberModule,
     ProgressSpinnerModule
   ],
   providers: [MessageService],
@@ -27,7 +39,11 @@ export class Sites implements OnInit {
   private router = inject(Router);
   private restaurantService = inject(Restaurant);
   private messageService = inject(MessageService);
-  
+  displayAddDialog = false;
+  addRestaurantForm: FormGroup;
+  mainImageFile: File | null = null;
+  menuImageFiles: File[] = [];
+
   displayImagesDialog = false;
   selectedRestaurantImages: { url: string }[] = [];
   restaurants: RestaurantData[] = [];
@@ -37,11 +53,17 @@ export class Sites implements OnInit {
   selectedRestaurantIndex: number | null = null;
   selectedImageUrl: string | null = null;
   displayImageDialog = false;
-  addSiteForm: FormGroup;
 
   constructor(private fb: FormBuilder) {
-    this.addSiteForm = this.fb.group({
-      site: ['', Validators.required]
+    this.addRestaurantForm = this.fb.group({
+      name: ['', Validators.required],
+      cuisine: ['', Validators.required],
+      description: ['', Validators.required],
+      rate: [0, Validators.required],
+      phone: ['', Validators.required],
+      websiteLink: ['', Validators.required],
+      deliveryTime: ['', Validators.required],
+      distance: ['', Validators.required]
     });
   }
 
@@ -58,7 +80,7 @@ export class Sites implements OnInit {
         detail: 'Please log in to view your restaurants'
       });
       // Redirect to login
-      this.router.navigate(['/login']);
+      this.router.navigate(['auth/login']);
       return;
     }
 
@@ -136,5 +158,67 @@ export class Sites implements OnInit {
     window.open(link, '_blank');
 
   }
+
+  showAddRestaurantDialog() {
+    this.displayAddDialog = true;
+  }
+
+  onMainImageSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.mainImageFile = file;
+    }
+  }
+  onMainImageRemoved(event: any) {
+    this.mainImageFile = null;
+  }
+  onMenuImageRemoved(event: any) {
+    this.menuImageFiles = this.menuImageFiles.filter(file => file !== event.file);
+  }
+  onMenuImagesSelected(event: any) {
+    this.menuImageFiles = Array.from(event.target.files);
+  }
+
+  submitRestaurant() {
+    if (this.addRestaurantForm.invalid || !this.mainImageFile) {
+      this.messageService.add({ severity: 'warn', summary: 'Missing Fields', detail: 'Please fill all required fields and upload an image.' });
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('name', this.addRestaurantForm.value.name);
+    formData.append('cuisine', this.addRestaurantForm.value.cuisine);
+    formData.append('description', this.addRestaurantForm.value.description);
+    formData.append('rate', this.addRestaurantForm.value.rate);
+    formData.append('phone', this.addRestaurantForm.value.phone);
+    formData.append('websiteLink', this.addRestaurantForm.value.websiteLink);
+    formData.append('deliveryTime', this.addRestaurantForm.value.deliveryTime);
+    formData.append('distance', this.addRestaurantForm.value.distance);
+
+    // Main image
+    formData.append('image', this.mainImageFile as File);
+
+    // Menu images
+    this.menuImageFiles.forEach((file, index) => {
+      formData.append('menuImages', file);
+    });
+
+    this.restaurantService.addRestaurant(formData).subscribe({
+      next: (res) => {
+        this.messageService.add({ severity: 'success', summary: 'Added', detail: 'Restaurant added successfully' });
+        this.displayAddDialog = false;
+        this.addRestaurantForm.reset();
+        this.mainImageFile = null;
+        this.menuImageFiles = [];
+        this.loadRestaurants();
+        
+      },
+      error: (err) => {
+        console.error(err);
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to add restaurant' });
+      }
+    });
+  }
+
 
 }

@@ -1,8 +1,100 @@
 <div class="card p-4 gap-4">
     <!-- Action Buttons -->
+    <!-- Action Buttons -->
     <div class="flex flex-wrap justify-end gap-2">
-        <p-button label="Add Site" icon="pi pi-plus"> </p-button>
+        <p-button label="Add Restaurant" icon="pi pi-plus" (click)="showAddRestaurantDialog()"> </p-button>
     </div>
+
+    <!-- Add Restaurant Dialog -->
+    <p-dialog header="Add Restaurant" [(visible)]="displayAddDialog" [modal]="true" [style]="{width: '50vw'}" [closable]="true">
+        <form [formGroup]="addRestaurantForm" (ngSubmit)="submitRestaurant()">
+            <!-- Name -->
+            <div class="mb-3">
+                <label class="font-semibold mb-3" for="name">Name</label>
+                <input type="text" id="name" pInputText formControlName="name" class="w-full" />
+            </div>
+
+            <!-- Cuisine -->
+            <div class="mb-3">
+                <label class="font-semibold">Cuisine</label>
+                <input type="text" pInputText formControlName="cuisine" class="w-full" />
+            </div>
+
+            <!-- Description -->
+            <div class="mb-3">
+                <label class="font-semibold">Description</label>
+                <textarea pInputTextarea formControlName="description" class="w-full"></textarea>
+            </div>
+            <!-- rate -->
+            <div class="mb-3">
+                <label class="font-semibold">Rate</label>
+                <p-inputnumber  pInputTextarea formControlName="rate" mode="decimal" [min]="0" [max]="5" class="w-full"/>
+            </div>
+
+            <!-- Phone -->
+            <div class="mb-3">
+                <label class="font-semibold">Phone</label>
+                <input type="text" pInputText formControlName="phone" class="w-full" />
+            </div>
+
+            <!-- Website Link -->
+            <div class="mb-3">
+                <label class="font-semibold">Website Link</label>
+                <input type="text" pInputText formControlName="websiteLink" class="w-full" />
+            </div>
+
+            <!-- Delivery Time -->
+            <div class="mb-3">
+                <label class="font-semibold">Delivery Time</label>
+                <input type="text" pInputText formControlName="deliveryTime" class="w-full" />
+            </div>
+
+            <!-- Distance -->
+            <div class="mb-3">
+                <label class="font-semibold">Distance</label>
+                <input type="text" pInputText formControlName="distance" class="w-full" />
+            </div>
+
+            <!-- Main Image -->
+            <div class="mb-3">
+                <label class="font-semibold">Main Image</label>
+                <p-fileUpload
+                    name="mainImage"
+                    [multiple]="false"
+                    accept="image/*"
+                    [auto]="true"
+                    [showUploadButton]="false"
+                    [showCancelButton]="false"
+                    (onSelect)="onMainImageSelected($event)"
+                    (onRemove)="onMainImageRemoved($event)"
+                >
+                </p-fileUpload>
+               
+            </div>
+
+            <!-- Menu Images -->
+            <div class="mb-3">
+                <label class="font-semibold">Menu Images</label>
+                <p-fileUpload
+                    name="menuImages"
+                    [multiple]="true"
+                    accept="image/*"
+                    [auto]="false"
+                    [showUploadButton]="false"
+                    [showCancelButton]="false"
+                    (onSelect)="onMenuImagesSelected($event)"
+                    (onRemove)="onMenuImageRemoved($event)"
+                >
+                </p-fileUpload>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex justify-end gap-2 mt-4">
+                <p-button label="Cancel" icon="pi pi-times" class="p-button-text" (click)="displayAddDialog=false"></p-button>
+                <p-button type="submit" label="Save" icon="pi pi-check" [disabled]="addRestaurantForm.invalid"></p-button>
+            </div>
+        </form>
+    </p-dialog>
 
     <!-- Table -->
     <p-table [value]="restaurants" [paginator]="true" [rows]="5" responsiveLayout="stack" [breakpoint]="'768px'" class="w-full mt-4">
