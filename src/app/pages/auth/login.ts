@@ -264,7 +264,7 @@ export class Login {
                         }
                         
                         // Navigate to dashboard or home
-                        this.router.navigate(['/']);
+                        this.router.navigate(['/dashboard']);
                     } else {
                         this.errorMessage = 'Login successful but no token received';
                     }

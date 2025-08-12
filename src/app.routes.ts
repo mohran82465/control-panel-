@@ -17,7 +17,7 @@ export const appRoutes: Routes = [
         path: '',
         component: AppLayout,
         children: [
-            { path: 'Dashboard', component: Dashboard },
+            { path: 'dashboard', component: Dashboard },
             { path: 'providers', component: Providers },
             { path: 'customers', component: Customers },
             { path: 'restaurant', component: Sites },
