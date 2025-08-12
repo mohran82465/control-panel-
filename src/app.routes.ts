@@ -9,11 +9,15 @@ import { Sites } from './app/pages/sites/sites';
 import { Product } from './app/pages/product/product';
 
 export const appRoutes: Routes = [
+    {path:'',
+        pathMatch:'full',
+        redirectTo:'/auth/login'
+    },
     {
         path: '',
         component: AppLayout,
         children: [
-            { path: '', component: Dashboard },
+            { path: 'Dashboard', component: Dashboard },
             { path: 'providers', component: Providers },
             { path: 'customers', component: Customers },
             { path: 'restaurant', component: Sites },
