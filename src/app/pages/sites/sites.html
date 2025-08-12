@@ -12,6 +12,7 @@
                 <th class="p-3 text-left">Cuisine</th>
                 <th class="p-3 text-left">Rating</th>
                 <th class="p-3 text-left">Phone</th>
+                <th class="p-3 text-left">Link</th>
                 <th class="p-3 text-left">Delivery Time</th>
                 <th class="p-3 text-left">Distance</th>
                 <th class="p-3 text-left">Image</th>
@@ -46,6 +47,11 @@
                 <td class="p-3 flex justify-between md:table-cell" data-label="Phone">
                     <span class="md:hidden font-semibold text-gray-700">Phone:</span>
                     {{ restaurant.phone }}
+                </td>
+                <!-- Phone -->
+                <td class="p-3 flex justify-between md:table-cell" data-label="Phone">
+                    <span class="md:hidden font-semibold text-gray-700">Link:</span>
+                    <p-button icon="pi pi-image" [rounded]="true" (click)="navigateLink(restaurant.websiteLink)"> </p-button>
                 </td>
 
                 <!-- Delivery Time -->

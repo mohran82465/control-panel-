@@ -2,10 +2,12 @@ import { Component } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { TableModule } from 'primeng/table';
+import { PopoverModule } from 'primeng/popover';
+
 
 @Component({
   selector: 'app-product',
-  imports: [ButtonModule, DialogModule, TableModule],
+  imports: [ButtonModule, DialogModule, TableModule,PopoverModule],
   templateUrl: './product.html',
   styleUrl: './product.scss'
 })
@@ -60,4 +62,9 @@ Commodi, adipisci cumque a necessitatibus asperiores cum porro quam itaque ipsa 
       resturant: "Sushi World"
     }
   ]
+
+  showImages(images: { url: string }[]) {
+    console.log("Show dialog with images:", images);
+    // You can trigger your <p-dialog> here
+  }
 }

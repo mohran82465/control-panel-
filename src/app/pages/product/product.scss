@@ -1,0 +1,7 @@
+::ng-deep .custom-tooltip {
+    width: 800px !important; /* wide tooltip */
+    white-space: normal !important; /* allow text to wrap */
+    text-align: left;
+    font-size: 14px;
+  }
+  

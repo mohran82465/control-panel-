@@ -1,17 +1,31 @@
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
+import { MessageModule } from 'primeng/message';
 import { AppFloatingConfigurator } from '../../layout/component/app.floatingconfigurator';
+import { Router } from '@angular/router';
+import { Auth } from '../service/auth';
 
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [ButtonModule, CheckboxModule, InputTextModule, PasswordModule, FormsModule, RouterModule, RippleModule, AppFloatingConfigurator],
+    imports: [
+        ButtonModule, 
+        CheckboxModule, 
+        InputTextModule, 
+        PasswordModule, 
+        ReactiveFormsModule,
+        FormsModule, 
+        RouterModule, 
+        RippleModule, 
+        MessageModule,
+        AppFloatingConfigurator
+    ],
     template: `
         <app-floating-configurator />
         <div class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen min-w-screen overflow-hidden">
@@ -36,26 +50,75 @@ import { AppFloatingConfigurator } from '../../layout/component/app.floatingconf
                                     />
                                 </g>
                             </svg>
-                            <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">Welcome to PrimeLand!</div>
+                            <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">Welcome to Dashboard!</div>
                             <span class="text-muted-color font-medium">Sign in to continue</span>
                         </div>
 
-                        <div>
-                            <label for="email1" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Email</label>
-                            <input pInputText id="email1" type="text" placeholder="Email address" class="w-full md:w-120 mb-8" [(ngModel)]="email" />
+                        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+                            <!-- Error Message -->
+                            @if (errorMessage) {
+                                <div class="mb-4">
+                                    <p-message severity="error" [text]="errorMessage" styleClass="w-full"></p-message>
+                                </div>
+                            }
 
-                            <label for="password1" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Password</label>
-                            <p-password id="password1" [(ngModel)]="password" placeholder="Password" [toggleMask]="true" styleClass="mb-4" [fluid]="true" [feedback]="false"></p-password>
+                            <div class="mb-4">
+                                <label for="identifier" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Email or Phone</label>
+                                <input 
+                                    pInputText 
+                                    id="identifier" 
+                                    type="text" 
+                                    placeholder="Email or phone number (e.g., 01113646573)" 
+                                    class="w-full md:w-120"
+                                    [class.ng-invalid]="loginForm.get('identifier')?.invalid && loginForm.get('identifier')?.touched"
+                                    formControlName="identifier" 
+                                />
+                                @if (loginForm.get('identifier')?.invalid && loginForm.get('identifier')?.touched) {
+                                    <small class="block mt-1 text-red-500">
+                                        @if (loginForm.get('identifier')?.hasError('required')) {
+                                            <span>Email or phone number is required</span>
+                                        }
+                                        @if (loginForm.get('identifier')?.hasError('invalidIdentifier')) {
+                                            <span>Please enter a valid email or Egyptian phone number (e.g., 01xxxxxxxx)</span>
+                                        }
+                                    </small>
+                                }
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="password" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Password</label>
+                                <p-password 
+                                    id="password" 
+                                    formControlName="password" 
+                                    placeholder="Password" 
+                                    [toggleMask]="true" 
+                                    [fluid]="true" 
+                                    [feedback]="false"
+                                    [class.ng-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+                                ></p-password>
+                                @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
+                                    <small class="block mt-1 text-red-500">
+                                        Password is required
+                                    </small>
+                                }
+                            </div>
 
                             <div class="flex items-center justify-between mt-2 mb-8 gap-8">
                                 <div class="flex items-center">
-                                    <p-checkbox [(ngModel)]="checked" id="rememberme1" binary class="mr-2"></p-checkbox>
+                                    <p-checkbox [(ngModel)]="rememberMe" id="rememberme1" binary class="mr-2" [ngModelOptions]="{standalone: true}"></p-checkbox>
                                     <label for="rememberme1">Remember me</label>
                                 </div>
                                 <span class="font-medium no-underline ml-2 text-right cursor-pointer text-primary">Forgot password?</span>
                             </div>
-                            <p-button label="Sign In" styleClass="w-full" routerLink="/"></p-button>
-                        </div>
+                            
+                            <p-button 
+                                label="Sign In" 
+                                styleClass="w-full" 
+                                type="submit"
+                                [disabled]="loginForm.invalid || isLoading"
+                                [loading]="isLoading"
+                            ></p-button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -63,9 +126,193 @@ import { AppFloatingConfigurator } from '../../layout/component/app.floatingconf
     `
 })
 export class Login {
-    email: string = '';
+    loginForm: FormGroup;
+    rememberMe: boolean = false;
+    isLoading: boolean = false;
+    errorMessage: string = '';
 
-    password: string = '';
+    constructor(
+        private fb: FormBuilder,
+        private authService: Auth,
+        private router: Router
+    ) {
+        this.loginForm = this.fb.group({
+            identifier: ['', [Validators.required, this.identifierValidator.bind(this)]],
+            password: ['', Validators.required]
+        });
+    }
 
-    checked: boolean = false;
+    // Fixed validator method - bound to 'this' context
+    identifierValidator(control: any) {
+        const value = control.value?.trim();
+        if (!value) return null;
+
+        // Email regex
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        
+        // Check if it's a valid email
+        if (emailRegex.test(value)) {
+            return null;
+        }
+
+        // Check if it's a valid Egyptian phone number
+        if (this.isValidEgyptianPhone(value)) {
+            return null;
+        }
+
+        return { invalidIdentifier: true };
+    }
+
+    // Static method to validate Egyptian phone numbers
+    isValidEgyptianPhone(phone: string): boolean {
+        if (!phone) return false;
+        
+        // Remove all spaces and special characters
+        const clean = phone.replace(/[^\d+]/g, '');
+        
+        // Egyptian phone patterns
+        const patterns = [
+            /^01[0125]\d{8}$/,           // 01xxxxxxxxx (11 digits)
+            /^201[0125]\d{8}$/,         // 201xxxxxxxxx (12 digits)
+            /^\+201[0125]\d{8}$/,       // +201xxxxxxxxx (13 characters)
+        ];
+        
+        return patterns.some(pattern => pattern.test(clean));
+    }
+
+    // Helper method to check if a value is an Egyptian phone number
+    isEgyptianPhone(value: string): boolean {
+        return this.isValidEgyptianPhone(value);
+    }
+
+    // Simplified and more reliable phone formatting
+    formatPhoneNumber(phone: string): string {
+        // Remove all spaces and special characters except +
+        let clean = phone.replace(/[^\d+]/g, '');
+        
+        console.log('🔍 Formatting phone - Original:', phone, 'Clean:', clean);
+        
+        // Handle different Egyptian phone formats
+        if (clean.match(/^01[0125]\d{8}$/)) {
+            // 01xxxxxxxxx -> +201xxxxxxxxx
+            const formatted = '+20' + clean;
+            console.log('✅ Format 01 -> +20:', formatted);
+            return formatted;
+        }
+        
+        if (clean.match(/^201[0125]\d{8}$/)) {
+            // 201xxxxxxxxx -> +201xxxxxxxxx
+            const formatted = '+' + clean;
+            console.log('✅ Format 201 -> +201:', formatted);
+            return formatted;
+        }
+        
+        if (clean.match(/^\+201[0125]\d{8}$/)) {
+            // Already correct format
+            console.log('✅ Already correct format:', clean);
+            return clean;
+        }
+        
+        if (clean.match(/^1[0125]\d{8}$/)) {
+            // 1xxxxxxxxx -> +201xxxxxxxxx (missing leading zero)
+            const formatted = '+200' + clean;
+            console.log('✅ Format 1 -> +200:', formatted);
+            return formatted;
+        }
+        
+        console.log('⚠️ No format matched, returning original:', phone);
+        return phone;
+    }
+
+    onSubmit() {
+        if (this.loginForm.valid) {
+            this.isLoading = true;
+            this.errorMessage = '';
+
+            const formValue = this.loginForm.value;
+            let identifier = formValue.identifier.trim();
+
+            // Format phone number if it's Egyptian
+            if (this.isEgyptianPhone(identifier)) {
+                const originalIdentifier = identifier;
+                identifier = this.formatPhoneNumber(identifier);
+                console.log('📱 Phone conversion:', originalIdentifier, '→', identifier);
+            }
+
+            const loginData = {
+                identifier: identifier,
+                password: formValue.password
+            };
+
+            console.log('🚀 Sending login data:', loginData);
+            console.log('🔗 API URL:', this.authService.getApiUrl());
+
+            this.authService.login(loginData).subscribe({
+                next: (response: any) => {
+                    console.log('✅ Login successful:', response);
+                    this.isLoading = false;
+                    
+                    // Handle successful response
+                    if (response.data && response.data.access_Token) {
+                        // Store tokens in localStorage
+                        localStorage.setItem('authToken', response.data.access_Token);
+                        localStorage.setItem('refreshToken', response.data.refreshToken);
+                        
+                        // Store user info
+                        if (response.data.checkUser) {
+                            localStorage.setItem('user', JSON.stringify(response.data.checkUser));
+                        }
+                        
+                        // Navigate to dashboard or home
+                        this.router.navigate(['/']);
+                    } else {
+                        this.errorMessage = 'Login successful but no token received';
+                    }
+                },
+                error: (error) => {
+                    console.error('❌ Login error:', error);
+                    console.error('Error status:', error.status);
+                    console.error('Error body:', error.error);
+                    
+                    this.isLoading = false;
+                    
+                    // Handle different error cases
+                    if (error.status === 401) {
+                        this.errorMessage = 'Invalid email/phone or password';
+                    } else if (error.status === 404) {
+                        this.errorMessage = 'User not found. Please check your email/phone number';
+                    } else if (error.status === 422) {
+                        this.errorMessage = 'Please check your input and try again';
+                    } else if (error.status === 400) {
+                        this.errorMessage = 'Bad request. Please check your input format';
+                    } else if (error.status === 0) {
+                        this.errorMessage = 'Unable to connect to server. Please check your internet connection';
+                    } else if (error.error?.message) {
+                        this.errorMessage = error.error.message;
+                    } else {
+                        this.errorMessage = 'An unexpected error occurred. Please try again';
+                    }
+                }
+            });
+        } else {
+            // Mark all fields as touched to show validation errors
+            this.loginForm.markAllAsTouched();
+            console.log('❌ Form is invalid:', this.loginForm.errors);
+        }
+    }
+
+    // Temporary test method to verify phone formatting
+    testPhoneFormat() {
+        const testCases = [
+            '01113646573',
+            '+201113646573',
+            '201113646573',
+            '1113646573'
+        ];
+        
+        console.log('🧪 Testing phone formatting:');
+        testCases.forEach(phone => {
+            console.log(`${phone} → ${this.formatPhoneNumber(phone)}`);
+        });
+    }
 }

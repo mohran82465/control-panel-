@@ -1,50 +1,56 @@
 <div class="card p-4 gap-4">
-    <div class="flex felx-wrap justify-end gap-2">
-        <p-button label="Add Product" icon="pi pi-plus" ></p-button>
+    <div class="flex flex-wrap justify-end gap-2">
+        <p-button label="Add Product" icon="pi pi-plus"></p-button>
     </div>
 
-    <p-table [value]="products" [paginator]="true" [rows]="5" responsiveLyout="stack" [breakpoint]="'758px'" class="w-full mt-4">
+    <p-table [value]="products" [paginator]="true" [rows]="5" responsiveLayout="stack" [breakpoint]="'758px'" class="w-full mt-4">
         <ng-template pTemplate="header">
             <tr>
                 <th class="p-3 text-left">Name</th>
-                <th class="p-3 text-left">description</th>
-                <th class="p-3 text-left">price</th>
-                <th class="p-3 text-left">discount</th>
-                <th class="p-3 text-left">images</th>
-                <th class="p-3 text-left">restaurant</th>
+                <th class="p-3 text-left">Description</th>
+                <th class="p-3 text-left">Price</th>
+                <th class="p-3 text-left">Discount</th>
+                <th class="p-3 text-left">Images</th>
+                <th class="p-3 text-left">Restaurant</th>
             </tr>
         </ng-template>
-        <ng-template pTamplate="body" let-product let-rowIndex="rowIndex">
+
+        <ng-template pTemplate="body" let-product let-rowIndex="rowIndex">
             <tr class="border-b hover:bg-gray-50 md:table-row block md:border-none">
-                <!-- Name -->
                 <td class="p-3 flex justify-between md:table-cell" data-label="Name">
                     <span class="md:hidden font-semibold text-gray-700">Name:</span>
-                    {{product.name}}
+                    {{ product.name }}
                 </td>
-                <!-- Description -->
-                <td class="p-3 flex justify-between md:table-cell" data-label="Name">
+                <!-- Table cell -->
+                <td class="p-3 flex justify-between md:table-cell truncate max-w-[200px]" data-label="Description">
                     <span class="md:hidden font-semibold text-gray-700">Description:</span>
-                    {{product.description}}
+
+                    <span #popoverRef pPopover="popoverContent" popoverClass="custom-popover" popoverPosition="top"> {{ product.description }} </span>
+
+                    <!-- Hidden popover content -->
+                    <ng-template #popoverContent>
+                        <div class="popover-text">{{ product.description }}</div>
+                    </ng-template>
                 </td>
-                <!-- Price -->
-                <td class="p-3 flex justify-between md:table-cell" data-label="Name">
+
+                <td class="p-3 flex justify-between md:table-cell" data-label="Price">
                     <span class="md:hidden font-semibold text-gray-700">Price:</span>
-                    {{product.price}}
+                    {{ product.price }}
                 </td>
-                <!-- Discount -->
-                <td class="p-3 flex justify-between md:table-cell" data-label="Name">
+
+                <td class="p-3 flex justify-between md:table-cell" data-label="Discount">
                     <span class="md:hidden font-semibold text-gray-700">Discount:</span>
-                    {{product.discount}}
+                    {{ product.discount }}
                 </td>
-                   <!-- Menu -->
-                   <td class="p-3 flex justify-between md:table-cell" data-label="Menu">
-                    <span class="md:hidden font-semibold text-gray-700">Product:</span>
-                    <p-button icon="pi pi-book" [rounded]="true" > </p-button>
+
+                <td class="p-3 flex justify-between md:table-cell" data-label="Images">
+                    <span class="md:hidden font-semibold text-gray-700">Images:</span>
+                    <p-button icon="pi pi-image" [rounded]="true" (click)="showImages(product.images)"></p-button>
                 </td>
-                <!-- restaurant -->
-                <td class="p-3 flex justify-between md:table-cell" data-label="Name">
+
+                <td class="p-3 flex justify-between md:table-cell" data-label="Restaurant">
                     <span class="md:hidden font-semibold text-gray-700">Restaurant:</span>
-                    {{product.restaurant}}
+                    {{ product.restaurant }}
                 </td>
             </tr>
         </ng-template>
