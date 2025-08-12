@@ -17,6 +17,7 @@
                 <th class="p-3 text-left">Image</th>
                 <th class="p-3 text-left">Menu</th>
                 <th class="p-3 text-left">Status</th>
+                <th class="p-3 text-left">product</th>
                 <th class="p-3 text-left">Actions</th>
             </tr>
         </ng-template>
@@ -75,6 +76,12 @@
                 <td class="p-3 flex justify-between md:table-cell" data-label="Status">
                     <span class="md:hidden font-semibold text-gray-700">Status:</span>
                     <span [class]="restaurant.isOpen ? 'text-green-600 font-semibold' : 'text-red-600 font-semibold'"> {{ restaurant.isOpen ? 'Open' : 'Closed' }} </span>
+                </td>
+
+                <!-- Product -->
+                <td class="p-3 flex justify-between md:table-cell" data-label="Product">
+                    <span class="md:hidden font-semibold text-gray-700">Prodcut:</span>
+                    <p-button icon="pi pi-box" [rounded]="true" (click)="routeToProduct(restaurant.id)"> </p-button>
                 </td>
 
                 <!-- Actions -->

@@ -75,7 +75,7 @@ export class AppMenu {
                             {
                                 label:'site',
                                 icon: 'pi pi-fw pi-map-marker',
-                                routerLink: ['/sites']
+                                routerLink: ['/restaurant']
                                 
                             }
                         ]

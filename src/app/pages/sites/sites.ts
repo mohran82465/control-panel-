@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { TableModule } from 'primeng/table';
@@ -11,10 +12,12 @@ import { TableModule } from 'primeng/table';
   styleUrl: './sites.scss'
 })
 export class Sites {
+  private router = inject(Router); 
   displayImagesDialog = false;
   selectedRestaurantImages: { url: string }[] = [];
   restaurants = [
     {
+      id:"1111",
       name: 'Pizza Palace',
       cuisine: 'Italian',
       rating: 4.5,
@@ -41,6 +44,7 @@ export class Sites {
       sites: ['Cairo', 'Giza']
     },
     {
+      id: '2222', 
       name: 'Sushi World',
       cuisine: 'Japanese',
       rating: 4.8,
@@ -89,5 +93,8 @@ displayImageDialog = false;
 previewImage(url: string) {
   this.selectedImageUrl = url;
   this.displayImageDialog = true;
+}
+routeToProduct(id:string){
+  this.router.navigate(['restaurant',id])
 }
 }
